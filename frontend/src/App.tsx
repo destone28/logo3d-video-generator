@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useUpload } from './hooks/useUpload'
 import { useRender } from './hooks/useRender'
 import { useJobStatus } from './hooks/useJobStatus'
@@ -9,11 +9,10 @@ import { formatFileSize, formatDuration, getStatusBadgeColor, downloadFile } fro
 import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE } from './lib/constants'
 
 function App() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
 
   const { currentUpload } = useUploadStore()
-  const { config, setConfig, presets } = useConfigStore()
+  const { config, setConfig } = useConfigStore()
   const { currentJob } = useRenderStore()
 
   const { uploadFile, removeBackground, isUploading, isRemovingBackground } = useUpload()
@@ -56,7 +55,6 @@ function App() {
       alert(`File too large. Maximum size is ${formatFileSize(MAX_FILE_SIZE)}`)
       return
     }
-    setSelectedFile(file)
     uploadFile(file)
   }
 
@@ -157,7 +155,7 @@ function App() {
                       onChange={(e) => setConfig({ preset: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-md"
                     >
-                      {presetsData && Object.entries(presetsData.animations).map(([key, preset]) => (
+                      {presetsData && presetsData.animations && Object.entries(presetsData.animations).map(([key, preset]: [string, any]) => (
                         <option key={key} value={key}>
                           {preset.name} - {preset.description}
                         </option>
@@ -173,7 +171,7 @@ function App() {
                       onChange={(e) => setConfig({ lighting: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-md"
                     >
-                      {presetsData && presetsData.lighting.map((light) => (
+                      {presetsData && presetsData.lighting && Array.isArray(presetsData.lighting) && presetsData.lighting.map((light: string) => (
                         <option key={light} value={light}>
                           {light.charAt(0).toUpperCase() + light.slice(1)}
                         </option>

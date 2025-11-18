@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { uploadAPI } from '../api/endpoints'
 import { useUploadStore } from '../store/uploadStore'
 
@@ -23,7 +23,7 @@ export function useUpload() {
 
   const removeBackgroundMutation = useMutation({
     mutationFn: (uploadId: string) => uploadAPI.removeBackground(uploadId),
-    onSuccess: (data, uploadId) => {
+    onSuccess: (_data, uploadId) => {
       // Refetch upload to get updated data
       uploadAPI.getUpload(uploadId).then(setCurrentUpload)
     },

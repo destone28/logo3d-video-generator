@@ -11,9 +11,9 @@ export function useJobStatus(jobId: string | null, enabled: boolean = true) {
     queryKey: ['job-status', jobId],
     queryFn: () => jobsAPI.getJobStatus(jobId!),
     enabled: enabled && !!jobId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling if job is completed or failed
-      if (data && (data.status === 'completed' || data.status === 'failed')) {
+      if (query.state.data && (query.state.data.status === 'completed' || query.state.data.status === 'failed')) {
         return false
       }
       return POLL_INTERVAL

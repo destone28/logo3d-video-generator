@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { renderAPI } from '../api/endpoints'
 import { useConfigStore } from '../store/configStore'
 import { useRenderStore } from '../store/renderStore'
@@ -13,10 +14,14 @@ export function useRender() {
     queryKey: ['presets'],
     queryFn: renderAPI.getPresets,
     staleTime: Infinity, // Presets don't change
-    onSuccess: (data) => {
-      setPresets(data)
-    },
   })
+
+  // Update presets in store when data changes
+  useEffect(() => {
+    if (presetsQuery.data) {
+      setPresets(presetsQuery.data)
+    }
+  }, [presetsQuery.data, setPresets])
 
   // Create preview
   const previewMutation = useMutation({
